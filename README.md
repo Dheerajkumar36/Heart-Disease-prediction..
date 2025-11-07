@@ -6,9 +6,6 @@ Built using **Python, Streamlit, Scikit-Learn, Pandas, and Random Forest Classif
 
 ---
 
-## 🚀 Live Demo
-🔗 **App Link:** *Will appear here after you deploy on Streamlit Cloud*  
-(Example placeholder)
 
 
 
