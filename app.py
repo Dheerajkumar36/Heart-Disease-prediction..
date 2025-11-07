@@ -1,15 +1,21 @@
-
 import streamlit as st
-import pickle
+import pandas as pd
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 
 st.title("Heart Disease Prediction App")
 st.write("Enter patient details to predict the risk of heart disease.")
 
-# Load Model
-model = pickle.load(open("heart_model.pkl", "rb"))
+# Load dataset
+df = pd.read_csv("heart.csv")
 
-# User Inputs
+# Train Model Directly Here (Fix for cloud pickle issue)
+X = df.drop("target", axis=1)
+y = df["target"]
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X, y)
+
+# Input Fields
 age = st.number_input("Age", 1, 120, 50)
 sex = st.selectbox("Sex (0 = Female, 1 = Male)", [0,1])
 cp = st.slider("Chest Pain Type (0-3)", 0, 3, 1)
@@ -24,13 +30,12 @@ slope = st.slider("Slope (0-2)", 0, 2, 1)
 ca = st.slider("Number of Major Vessels (0-4)", 0, 4, 0)
 thal = st.selectbox("Thal (1-3)", [1,2,3])
 
-# Prepare Input
+# Prepare Input for Prediction
 features = np.array([[age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal]])
 
-# Predict
 if st.button("Predict"):
     prediction = model.predict(features)
     if prediction[0] == 1:
-        st.success("✅ High risk of Heart Disease. Consult a doctor.")
+        st.error("⚠️ High Risk of Heart Disease Detected. Please consult a doctor.")
     else:
-        st.info("🟢 No major risk detected.")
+        st.success("✅ Low Risk. No immediate concern.")
